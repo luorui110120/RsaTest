@@ -3,6 +3,8 @@ package com.rsa;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -65,4 +67,64 @@ public class Utils {
             System.out.println(str);
         }
     }
+    /**
+     * 合并byte[]数组 （不改变原数组）
+     * @param byte_1
+     * @param byte_2
+     * @return 合并后的数组
+     */
+    public static byte[] byteMerger(byte[] byte_1, byte[] byte_2){
+        byte[] byte_3 = new byte[byte_1.length+byte_2.length];
+        System.arraycopy(byte_1, 0, byte_3, 0, byte_1.length);
+        System.arraycopy(byte_2, 0, byte_3, byte_1.length, byte_2.length);
+        return byte_3;
+    }
+    /**
+     * 截取byte数组   不改变原数组
+     * @param b 原数组
+     * @param off 偏差值（索引）
+     * @param length 长度
+     * @return 截取后的数组
+     */
+    public static byte[] subByte(byte[] b,int off,int length){
+        byte[] b1 = new byte[length];
+        System.arraycopy(b, off, b1, 0, length);
+        return b1;
+    }
+    ///比较两个数组是否相等
+    public static boolean byteEquals(byte[] a, byte[] b){
+        return Arrays.equals(a,b);
+    }
+
+    //byte 数组与 int 的相互转换
+    public static int byteArrayToInt(byte[] b) {
+        return   b[3] & 0xFF |
+                (b[2] & 0xFF) << 8 |
+                (b[1] & 0xFF) << 16 |
+                (b[0] & 0xFF) << 24;
+    }
+
+    public static byte[] intToByteArray(int a) {
+        return new byte[] {
+                (byte) ((a >> 24) & 0xFF),
+                (byte) ((a >> 16) & 0xFF),
+                (byte) ((a >> 8) & 0xFF),
+                (byte) (a & 0xFF)
+        };
+    }
+
+    //byte 数组与 long 的相互转换
+    public static byte[] longToBytes(long x) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.putLong(0, x);
+        return buffer.array();
+    }
+
+    public static long bytesToLong(byte[] bytes) {
+        ByteBuffer buffer = ByteBuffer.allocate(8);
+        buffer.put(bytes, 0, bytes.length);
+        buffer.flip();//need flip
+        return buffer.getLong();
+    }
+
 }
